@@ -11,10 +11,10 @@ from telethon.errors import FloodWaitError, RPCError
 API_ID = int(os.environ.get("API_ID", 34783446))
 API_HASH = os.environ.get("API_HASH", "c1da051b38797498a32805f762c36bd3")
 STRING_SESSION = os.environ.get("STRING_SESSION", "")
-SOURCE_CHANNEL = int(os.environ.get("SOURCE_CHANNEL", -1004438106656))
+SOURCE_CHANNEL = int(os.environ.get("SOURCE_CHANNEL", -1004407058956))
 TARGET_CHANNEL = int(os.environ.get("TARGET_CHANNEL", -1003783045906))
-DELETE_DELAY = int(os.environ.get("DELETE_DELAY", 10))
-GAP_DELAY = int(os.environ.get("GAP_DELAY", 10))
+DELETE_DELAY = int(os.environ.get("DELETE_DELAY", 15))
+GAP_DELAY = int(os.environ.get("GAP_DELAY", 15))
 
 # ===== BLOCK BINS =====
 BLOCK_BINS = {
