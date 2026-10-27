@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en-IN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Secure Payment • Grouth</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(180deg, #EEF2FF, #F8FAFC);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        [data-theme="dark"] body {
+            background: #0F172A;
+        }
+
+        .container {
+            background: #fff;
+            padding: 28px;
+            max-width: 400px;
+            width: 100%;
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(108, 60, 225, 0.12);
+            border: 1px solid #E2E8F0;
+            transition: all 0.3s ease;
+        }
+        [data-theme="dark"] .container {
+            background: #1E293B;
+            border-color: #334155;
+            color: #F1F5F9;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        .header h2 {
+            font-size: 22px;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .header h2 i {
+            color: #6C3CE1;
+        }
+        .secure-badge {
+            font-size: 12px;
+            color: #10B981;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .info-box {
+            background: #F1F5F9;
+            padding: 14px;
+            border-radius: 14px;
+            margin-bottom: 16px;
+            font-size: 14px;
+        }
+        [data-theme="dark"] .info-box {
+            background: #0F172A;
+            color: #F1F5F9;
+        }
+        .info-box div {
+            display: flex;
+            justify-content: space-between;
+            padding: 4px 0;
+        }
+        .info-box .label {
+            color: #64748B;
+        }
+        [data-theme="dark"] .info-box .label {
+            color: #94A3B8;
+        }
+
+        .amount {
+            text-align: center;
+            font-size: 36px;
+            font-weight: 900;
+            color: #6C3CE1;
+            margin: 12px 0;
+        }
+        [data-theme="dark"] .amount {
+            color: #8B5CF6;
+        }
+        .amount small {
+            font-size: 16px;
+            font-weight: 400;
+            color: #64748B;
+        }
+        [data-theme="dark"] .amount small {
+            color: #94A3B8;
+        }
+
+        .qr-wrapper {
+            background: #F8FAFC;
+            border-radius: 16px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 16px;
+            border: 2px dashed #E2E8F0;
+            position: relative;
+        }
+        [data-theme="dark"] .qr-wrapper {
+            background: #0F172A;
+            border-color: #334155;
+        }
+        #qrcode canvas {
+            max-width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* download button inside QR wrapper */
+        .qr-download-btn {
+            margin-top: 12px;
+            background: #6C3CE1;
+            border: none;
+            border-radius: 30px;
+            padding: 8px 20px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #fff;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 10px rgba(108, 60, 225, 0.25);
+        }
+        .qr-download-btn:hover {
+            transform: scale(1.03);
+            background: #5a2fc7;
+        }
+        .qr-download-btn i {
+            font-size: 14px;
+        }
+
+        .upi-id {
+            text-align: center;
+            font-size: 13px;
+            color: #64748B;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        [data-theme="dark"] .upi-id {
+            color: #94A3B8;
+        }
+        .upi-id code {
+            background: #F1F5F9;
+            padding: 4px 12px;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 14px;
+            color: #0F172A;
+        }
+        [data-theme="dark"] .upi-id code {
+            background: #0F172A;
+            color: #F1F5F9;
+        }
+
+        .input-group {
+            margin-bottom: 12px;
+        }
+        .input-group label {
+            font-size: 13px;
+            font-weight: 600;
+            display: block;
+            margin-bottom: 4px;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 14px;
+            border-radius: 12px;
+            border: 2px solid #E2E8F0;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            background: #F8FAFC;
+            outline: none;
+        }
+        [data-theme="dark"] .input-group input {
+            background: #0F172A;
+            border-color: #334155;
+            color: #F1F5F9;
+        }
+        .input-group input:focus {
+            border-color: #6C3CE1;
+            box-shadow: 0 0 0 4px rgba(108, 60, 225, 0.1);
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 14px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            background: linear-gradient(135deg, #6C3CE1, #4F46E5);
+            color: #fff;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .btn-primary:hover:not(:disabled) {
+            transform: scale(1.02);
+            box-shadow: 0 8px 24px rgba(108, 60, 225, 0.3);
+        }
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .timer {
+            text-align: center;
+            font-size: 14px;
+            color: #64748B;
+            margin-top: 12px;
+        }
+        [data-theme="dark"] .timer {
+            color: #94A3B8;
+        }
+        .timer span {
+            font-weight: 700;
+            color: #EF4444;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            margin-top: 16px;
+        }
+        .footer-links a {
+            font-size: 13px;
+            color: #64748B;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        .footer-links a:hover {
+            color: #6C3CE1;
+        }
+        [data-theme="dark"] .footer-links a {
+            color: #94A3B8;
+        }
+        [data-theme="dark"] .footer-links a:hover {
+            color: #8B5CF6;
+        }
+
+        /* OVERLAYS */
+        .overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(8px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            padding: 20px;
+        }
+        .overlay.active {
+            display: flex;
+        }
+
+        .overlay-box {
+            background: #fff;
+            padding: 32px;
+            border-radius: 24px;
+            max-width: 360px;
+            width: 100%;
+            text-align: center;
+            animation: popIn 0.3s ease;
+        }
+        [data-theme="dark"] .overlay-box {
+            background: #1E293B;
+            color: #F1F5F9;
+        }
+
+        @keyframes popIn {
+            from {
+                transform: scale(0.9) translateY(20px);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1) translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .loader {
+            width: 48px;
+            height: 48px;
+            border: 4px solid #E2E8F0;
+            border-top: 4px solid #6C3CE1;
+            border-radius: 50%;
+            margin: 16px auto;
+            animation: spin 0.8s linear infinite;
+        }
+        [data-theme="dark"] .loader {
+            border-color: #334155;
+            border-top-color: #8B5CF6;
+        }
+        @keyframes spin {
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .success-icon {
+            font-size: 56px;
+            color: #10B981;
+            margin-bottom: 12px;
+        }
+        .overlay-box h3 {
+            font-size: 22px;
+            margin-bottom: 8px;
+        }
+        .overlay-box p {
+            color: #64748B;
+            font-size: 14px;
+        }
+        [data-theme="dark"] .overlay-box p {
+            color: #94A3B8;
+        }
+        .overlay-box .order-id {
+            background: #F1F5F9;
+            padding: 8px 16px;
+            border-radius: 10px;
+            font-family: monospace;
+            font-size: 16px;
+            font-weight: 700;
+            margin: 12px 0;
+            display: inline-block;
+        }
+        [data-theme="dark"] .overlay-box .order-id {
+            background: #0F172A;
+            color: #F1F5F9;
+        }
+        .overlay-box .btn-secondary {
+            margin-top: 16px;
+            padding: 12px 32px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            background: #6C3CE1;
+            color: #fff;
+            transition: all 0.3s ease;
+        }
+        .overlay-box .btn-secondary:hover {
+            transform: scale(1.05);
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 20px;
+            }
+            .amount {
+                font-size: 28px;
+            }
+            .header h2 {
+                font-size: 18px;
+            }
+            .qr-download-btn {
+                font-size: 12px;
+                padding: 6px 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container" id="payPage">
+        <div class="header">
+            <h2><i class="fas fa-lock"></i> Payment</h2>
+            <span class="secure-badge"><i class="fas fa-shield-alt"></i> Secure</span>
+        </div>
+
+        <div class="info-box">
+            <div><span class="label">Service</span> <span id="serviceDisplay">-</span></div>
+            <div><span class="label">Username</span> <span id="usernameDisplay">-</span></div>
+        </div>
+
+        <div class="amount">
+            ₹<span id="priceDisplay">0</span>
+            <small>one-time</small>
+        </div>
+
+        <!-- QR wrapper with download button -->
+        <div class="qr-wrapper">
+            <canvas id="qrcode"></canvas>
+            <button class="qr-download-btn" id="downloadQrBtn">
+                <i class="fas fa-download"></i> Download QR
+            </button>
+        </div>
+
+        <div class="upi-id">
+            <i class="fas fa-qrcode"></i>
+            Pay to: <code id="upiDisplay">grouthindia@airtel</code>
+        </div>
+
+        <div class="input-group">
+            <label><i class="fas fa-hashtag"></i> Transaction / UTR ID</label>
+            <input type="text" id="txnInput" placeholder="Enter UPI transaction ID" maxlength="16" />
+        </div>
+
+        <button class="btn-primary" id="submitBtn" disabled>
+            <i class="fas fa-check-circle"></i> Verify Payment
+        </button>
+
+        <div class="timer">
+            <i class="fas fa-hourglass-half"></i> Time remaining: <span id="timerDisplay">02:00</span>
+        </div>
+
+        <div class="footer-links">
+            <a href="orders.html"><i class="fas fa-box"></i> My Orders</a>
+            <a href="servish.html"><i class="fas fa-arrow-left"></i> Back</a>
+        </div>
+    </div>
+
+    <!-- LOADING -->
+    <div class="overlay" id="loadingOverlay">
+        <div class="overlay-box">
+            <div class="loader"></div>
+            <h3>Checking Payment</h3>
+            <p>Please wait while we verify your transaction...</p>
+            <p style="font-weight:700;font-size:24px;color:#6C3CE1;" id="loadTimer">10</p>
+        </div>
+    </div>
+
+    <!-- SUCCESS -->
+    <div class="overlay" id="successOverlay">
+        <div class="overlay-box">
+            <div class="success-icon"><i class="fas fa-check-circle"></i></div>
+            <h3>🎉 Payment Successful!</h3>
+            <p>Your order has been placed successfully.</p>
+            <div class="order-id" id="orderIdDisplay">FF000000</div>
+            <p style="font-size:12px;">Your followers will be delivered shortly</p>
+            <button class="btn-secondary" onclick="window.location.href='orders.html'">
+                <i class="fas fa-box"></i> View Orders
+            </button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            // ===== GET PARAMS =====
+            const params = new URLSearchParams(window.location.search);
+            const service = params.get("service") || "N/A";
+            const price = params.get("price") || "0";
+            const username = params.get("username") || "N/A";
+
+            console.log("Payment Page Loaded:", { service, price, username });
+
+            document.getElementById("serviceDisplay").textContent = service;
+            document.getElementById("usernameDisplay").textContent = username;
+            document.getElementById("priceDisplay").textContent = price;
+
+            // ===== THEME =====
+            if (localStorage.getItem('theme') === 'dark') {
+                document.documentElement.setAttribute('data-theme', 'dark');
+            }
+
+            // ===== QR CODE =====
+            const UPI_ID = "grouthindia@airtel";
+            document.getElementById("upiDisplay").textContent = UPI_ID;
+
+            const upiString = `upi://pay?pa=${UPI_ID}&pn=Grouth%20Followers&am=${price}&cu=INR`;
+
+            // Generate QR
+            const qrCanvas = document.getElementById("qrcode");
+            QRCode.toCanvas(qrCanvas, upiString, { width: 180, margin: 2 }, function(error) {
+                if (error) console.error("QR Error:", error);
+            });
+
+            // ===== DOWNLOAD QR BUTTON =====
+            document.getElementById("downloadQrBtn").addEventListener("click", function() {
+                // get the canvas element
+                const canvas = document.getElementById("qrcode");
+                // create a temporary link
+                const link = document.createElement("a");
+                link.download = `QR-${service || 'payment'}.png`;
+                link.href = canvas.toDataURL("image/png");
+                link.click();
+            });
+
+            // ===== TXN INPUT =====
+            const txnInput = document.getElementById("txnInput");
+            const submitBtn = document.getElementById("submitBtn");
+
+            txnInput.addEventListener("input", () => {
+                txnInput.value = txnInput.value.replace(/[^a-zA-Z0-9]/g, "").toUpperCase();
+                submitBtn.disabled = txnInput.value.length < 8;
+            });
+
+            // ===== SUBMIT =====
+            submitBtn.addEventListener("click", () => {
+                document.getElementById("payPage").style.display = "none";
+                document.getElementById("loadingOverlay").classList.add("active");
+
+                let t = 10;
+                const timerEl = document.getElementById("loadTimer");
+                const interval = setInterval(() => {
+                    timerEl.textContent = t--;
+                    if (t < 0) {
+                        clearInterval(interval);
+                        document.getElementById("loadingOverlay").classList.remove("active");
+                        showSuccess();
+                    }
+                }, 1000);
+            });
+
+            // ===== SUCCESS =====
+            function showSuccess() {
+                const orderId = "FF" + String(Math.floor(Math.random() * 900000 + 100000));
+                document.getElementById("orderIdDisplay").textContent = orderId;
+                document.getElementById("successOverlay").classList.add("active");
+
+                // Save order
+                let orders = JSON.parse(localStorage.getItem("orders")) || [];
+                orders.push({
+                    orderId: orderId,
+                    username: username,
+                    service: service,
+                    price: price,
+                    status: "Pending ⏳",
+                    time: new Date().toLocaleString()
+                });
+                localStorage.setItem("orders", JSON.stringify(orders));
+
+                // Auto-approve after 20s
+                setTimeout(() => {
+                    let updated = JSON.parse(localStorage.getItem("orders"));
+                    updated = updated.map(o =>
+                        o.orderId === orderId ? { ...o, status: "Approved ✅" } : o
+                    );
+                    localStorage.setItem("orders", JSON.stringify(updated));
+                }, 20000);
+            }
+
+            // ===== TIMER =====
+            let time = 120;
+            const timerDisplay = document.getElementById("timerDisplay");
+            setInterval(() => {
+                const m = String(Math.floor(time / 60)).padStart(2, '0');
+                const s = String(time % 60).padStart(2, '0');
+                timerDisplay.textContent = `${m}:${s}`;
+                if (time > 0) time--;
+            }, 1000);
+
+            // ===== KEYBOARD =====
+            txnInput.addEventListener("keydown", (e) => {
+                if (e.key === "Enter" && !submitBtn.disabled) {
+                    submitBtn.click();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
